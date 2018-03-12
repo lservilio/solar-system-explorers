@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <title>Solar System Explorers</title>
+
+  <style>
+    body {
+      font: 100% / 1.5 "Helvetica Neue", Helvetica, Arial, sans-serif;
+      max-width: 40em;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    li {
+      margin-top: 1.5em;
+    }
+    li h2 {
+      margin-top: 0;
+      display: inline;
+    }
+    @supports (object-fit: cover) {
+      img {
+        max-width: 100%;
+        object-fit: cover;
+      } 
+    }
+  </style>
+
+</head>
+<body>
+
+<h1>Solar System Explorers</h1>
+<ol id="people-list"></ol>
+
+<script type="text/template" id="person-template">
+  <li>
+    <details>
+      <summary><h2>{{ name }}</h2></summary>
+      <p>{{ title }}</p>
+      <figure>
+        <!-- https://solarsystem.nasa.gov/system/site_staffs/detail_images/4157_404324_10100115118792814_1316951974_n.jpg -->
+        <img src="https://solarsystem.nasa.gov/system/site_staffs/detail_images/{{ id }}_{{ detail_image_file_name }}" alt="{{ name }}" />
+      </figure>
+      {{ body }}
+    </details>
+  </li>
+</script>
+
+
+<script>
+(function() {
+
+  // 1) Request the people data
+
+  // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+  //
+  // TBD: Can we send this request to a CORS enabled server?
+  // fetch('https://solarsystem.nasa.gov/api/v1/site_staffs/?page=0&per_page=200&order=name+asc')
+  //
+  // In the mean time, we can use a local, static copy of the API…
+  fetch('/data.json')
+    .then(function(response) {
+      return response.json()
+    })
+    .then(function(myJson) {
+      console.log(myJson)
+      addItems(myJson)
+    })
+    .catch(function(error) {
+      console.error(error)
+    })
+
+  function addItems(data) {
+
+    var list = document.getElementById('people-list')
+    var template = document.getElementById('person-template')
+
+    if (data && list && template) {
+
+      // For each person
+      for (var index = 0; index < data.items.length; index++) {
+
+        // Create a new element and fill it with that person’s information
+        createItem(data.items[index], list, template)
+      }
+
+    }
+  }
+
+  function createItem(itemData, list, template) {
+    var html = template.innerHTML
+      .replace(/\{\{ name \}\}/g, itemData.name)
+      .replace("{{ title }}", itemData.title)
+      .replace("{{ id }}", itemData.id)
+      .replace("{{ detail_image_file_name }}", itemData.detail_image_file_name)
+      .replace("{{ body }}", itemData.body.replace(/='\//g, "='https://solarsystem.nasa.gov/"))
+
+    list.insertAdjacentHTML('beforeend', html)
+  }
+
+})();
+
+</script>
+
+</body>
+</html>
