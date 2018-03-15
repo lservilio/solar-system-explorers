@@ -23,6 +23,7 @@
 <table>
   <tr>
     <th>Name</th>
+    <th>Title</th>
     <th>URL</th>
     <td>Birthplace</td>
     <th>Latitude</th>
@@ -33,6 +34,7 @@
   <script type="text/template" id="location-template">
     <tr>
       <td>{{ name }}</td>
+      <td>{{ title }}</td>
       <td><a href="https://solarsystem.nasa.gov{{ link }}">https://solarsystem.nasa.gov{{ link }}</a></td>
       <td>{{ birthplace }}</td>
       <td>{{ latitude }}</td>
@@ -110,6 +112,7 @@
     // Create a new element and fill it with that person’s information
     var html = template.innerHTML
       .replace(/\{\{ name \}\}/g, itemData.name)
+      .replace(/\{\{ title \}\}/g, itemData.title)  
       .replace(/\{\{ link \}\}/g, itemData.link)
       .replace(/\{\{ latitude \}\}/g, itemData.latitude)
       .replace(/\{\{ longitude \}\}/g, itemData.longitude)
